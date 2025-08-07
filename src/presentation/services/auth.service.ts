@@ -1,3 +1,4 @@
+import { bcryptAdapter } from "../../config";
 import { UserModel } from "../../data";
 import { CustomError, RegisterUserDto, UserEntity } from "../../domain";
 
@@ -10,9 +11,10 @@ export class AuthService {
     if (existUser) throw CustomError.badRequest("User email already exists");
     try {
       const user = new UserModel(registerUserDto);
-      await user.save();
       //Falta pasos importantes
       //Ecriptar la contraseña
+      user.password = bcryptAdapter.hash(registerUserDto.password);
+      await user.save();
       //Generar JWT
       //email de verificación
 
