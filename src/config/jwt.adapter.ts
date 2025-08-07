@@ -7,16 +7,15 @@ export class JwtAdapter {
   static async generateToken(
     payload: string | Buffer | object,
     options: SignOptions = { expiresIn: "2h" }
-  ): Promise<string> {
-    return new Promise((resolve, reject) => {
+  ) {
+    return new Promise((resolve) => {
       const secret: Secret | undefined = JWT_SEED;
 
-      if (!secret)
-        return reject(new Error("JWT_SECRET no está definido en el entorno."));
+      if (!secret) return resolve(null);
 
       jwt.sign(payload, secret, options, (err, token) => {
         if (err || !token) {
-          return reject(err ?? new Error("No se pudo generar el token."));
+          return resolve(null);
         }
         resolve(token);
       });

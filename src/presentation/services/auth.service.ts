@@ -12,18 +12,23 @@ export class AuthService {
   constructor() {}
 
   public async registerUser(registerUserDto: RegisterUserDto) {
+    //Validaciones
     const existUser = await UserModel.findOne({ email: registerUserDto.email });
     if (existUser) throw CustomError.badRequest("User email already exists");
     try {
       const user = new UserModel(registerUserDto);
-      //Falta pasos importantes
+      //Encriptar password
       user.password = bcryptAdapter.hash(registerUserDto.password);
-      //Generar JWT
+
       await user.save();
       //email de verificación
 
+      //Generar JWT
+      const token = await JwtAdapter.generateToken({ id: user.id });
+      if (!token) throw CustomError.internalServer("Error while creating JWT");
+
       const { password, ...userEntity } = UserEntity.fromObject(user);
-      return { user: userEntity, token: "token" };
+      return { user: userEntity, token: token };
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
     }
@@ -38,14 +43,9 @@ export class AuthService {
     );
     if (!isMatch) throw CustomError.badRequest("Password not match");
     const { password, ...userEntity } = UserEntity.fromObject(existUser);
-    try {
-      const token = await JwtAdapter.generateToken({
-        id: existUser.id,
-        email: existUser.email,
-      });
-      return { user: userEntity, token: token };
-    } catch (error) {
-      throw CustomError.internalServer(`${error}`);
-    }
+
+    const token = await JwtAdapter.generateToken({ id: existUser.id });
+    if (!token) throw CustomError.internalServer("Error while creating JWT");
+    return { user: userEntity, token: token };
   }
 }
