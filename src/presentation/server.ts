@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import path from "path";
+import { envs } from "../config";
 
 interface Options {
   port: number;
@@ -41,7 +42,8 @@ export class Server {
     });
 
     this.serverListener = this.app.listen(this.port, () => {
-      console.log(`Server running on http://localhost:${this.port}`);
+      // console.log(`Server running on http://localhost:${this.port}`);
+      console.log(`Server running on ${envs.WEBSERVICE_URL}`);
     });
   }
 
