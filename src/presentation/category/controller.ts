@@ -20,10 +20,9 @@ export class CategoryController {
       .catch((error) => this.handleError(error, res));
   };
   getCategories = async (req: Request, res: Response) => {
-    res.json({ message: "Categories found" });
-    //     this.categoryService
-    //       .getCategories()
-    //       .then((categories) => res.status(200).json(categories))
-    //       .catch((error) => this.handleError(error, res));
+    this.categoryService
+      .getCategories()
+      .then((categories) => res.status(200).json(categories))
+      .catch((error) => this.handleError(error, res));
   };
 }
