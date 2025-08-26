@@ -32,8 +32,11 @@ export class ProductService {
         ProductModel.countDocuments(),
         ProductModel.find()
           .skip((page - 1) * limit)
-          .limit(limit),
-        //Todo: Populate
+          .limit(limit)
+          //   .populate("user", "name email")
+          //   .populate("category", "name"),
+          .populate("user")
+          .populate("category"),
       ]);
       return {
         page: page,

@@ -16,5 +16,12 @@ const categorySchema = new mongoose.Schema({
     required: true,
   },
 });
+categorySchema.virtual("id").get(function () {
+  return this._id.toString();
+});
+categorySchema.set("toJSON", {
+  virtuals: true,
+  transform: (doc, { _id, __v, ...rest }) => ({ ...rest }),
+});
 
 export const CategoryModel = mongoose.model("Category", categorySchema);

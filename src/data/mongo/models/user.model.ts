@@ -28,5 +28,12 @@ const userSchema = new mongoose.Schema({
     default: "USER_ROLE",
   },
 });
+userSchema.virtual("id").get(function () {
+  return this._id.toString();
+});
+userSchema.set("toJSON", {
+  virtuals: true,
+  transform: (doc, { _id, __v, password, ...rest }) => ({ ...rest }),
+});
 
 export const UserModel = mongoose.model("User", userSchema);
